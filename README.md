@@ -1,4 +1,4 @@
-<h2 align="center" style="margin-top: 0px;">Haven</h2>
+<h2 align="center" style="margin-top: 0px;">Haven Modified</h2>
 <h3 align="center" style="margin-top: 0px;">An internal tf2 cheat.</h3>
 <p align="center">
 <a href="https://github.com/tf2cheater2013/Fedoraware/actions"><img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/emilyinure/haven-tf2/msbuild.yml?branch=main"></a><a href="https://github.com/emilyinure/haven-tf2/actions"></p>
