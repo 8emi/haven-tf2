@@ -1,6 +1,7 @@
 #include "sdk.h"
 #include "movement_simulate.h"
 #include <string.h>
+#include "i_client_entity.h"
 void c_visuals::player_esp()
 {
     for (auto i = 1; i < g_interfaces.m_engine->get_max_clients(); i++)
@@ -12,11 +13,23 @@ void c_visuals::player_esp()
             continue;
         }
 
+            
         const auto player = g_interfaces.m_entity_list->get_entity<c_base_player>(i);
 
-        if (!player->is_valid(g_cl.m_local))
+        int alpha = 122.f;
+        int low_alpha = 80.f;
+        color dorcolors = {255, 255, 255, alpha};
+        if (!player->is_valid(g_cl.m_local, true, false, true))
             continue;
+        if (player->is_valid(g_cl.m_local, true, true, true))
+        {
 
+           alpha = 255.f;
+           low_alpha = 179.f;
+           dorcolors = {0, 255, 0, alpha};
+
+       
+        }
         auto shared = player->m_shared();
         if (!shared)
             continue;
@@ -69,19 +82,19 @@ void c_visuals::player_esp()
 
         if (player_esp.name->m_value)
             if (g_interfaces.m_engine->get_player_info(player->entindex(), &player_info))
-                g_render.text(g_render.m_fonts.secondary,
+                g_render.text(g_render.m_fonts.main,
                               {bounding_box.m_x + (bounding_box.m_w * 0.5f), bounding_box.m_y - 15}, player_info.m_name,
                               g_cl.m_local->m_i_team_num() == player->m_i_team_num() ? g_ui.m_theme
-                                                                                     : color(255, 255, 255),
+                                                                                     : color(255, 255, 255, alpha),
                               text_align_center);
 
         if (player_esp.box->m_value)
         {
             g_render.outlined_rect(
-                {bounding_box.m_x - 1, bounding_box.m_y - 1, bounding_box.m_w + 2, bounding_box.m_h + 2}, {0, 0, 0});
+                {bounding_box.m_x - 1, bounding_box.m_y - 1, bounding_box.m_w + 2, bounding_box.m_h + 2}, {0, 0, 0, low_alpha});
             g_render.outlined_rect(
-                {bounding_box.m_x + 1, bounding_box.m_y + 1, bounding_box.m_w - 2, bounding_box.m_h - 2}, {0, 0, 0});
-            g_render.outlined_rect(bounding_box, {255, 255, 255});
+                {bounding_box.m_x + 1, bounding_box.m_y + 1, bounding_box.m_w - 2, bounding_box.m_h - 2}, {0, 0, 0, low_alpha});
+            g_render.outlined_rect(bounding_box, {255, 255, 255, low_alpha});
         }
 
         if (player_esp.health->m_selected_index == 1)
@@ -91,11 +104,23 @@ void c_visuals::player_esp()
             // get our healthbar height.
             const auto healthbar_height = health_bar_area.m_h * math::get_fraction(health, max_health, 0);
 
-            g_render.filled_rect(health_bar_area, {35, 35, 35});
+            g_render.filled_rect(health_bar_area, {35, 35, 35, 255});
             g_render.filled_rect({health_bar_area.m_x, health_bar_area.m_y + (health_bar_area.m_h - healthbar_height),
                                   health_bar_area.m_w, healthbar_height},
-                                 {0, 255, 0});
-            g_render.outlined_rect(health_bar_area, {0, 0, 0});
+                                 dorcolors);
+            g_render.outlined_rect(health_bar_area, {0, 0, 0, 255});
+
+
+
+            char buffer[128];
+            _itoa(health, buffer, 10);
+            if (health < max_health)
+            {
+                g_render.text(g_render.m_fonts.secondary,
+                              {bounding_box.m_x - 2, bounding_box.m_y + health_bar_area.m_h - healthbar_height - 1},
+                              buffer, color(255, 255, 255, 175), text_align_right);
+            }
+         
         }
         else if (player_esp.health->m_selected_index == 2)
         {
@@ -122,24 +147,36 @@ void c_visuals::player_esp()
 
                 flag_offset += flag_text_size.m_y + 1;
             };
-
+         
             if (health > max_health)
-                draw_flag("Overheal", color(255, 255, 255));
+                draw_flag("OH", color(255, 255, 255, alpha));
+
+            if (health < max_health)
+                draw_flag("HIT", color(255, 255, 255, alpha));
+
+             if (player->is_dormant())
+               draw_flag("DORMANT", color(255, 255, 255, alpha));
 
             if (shared->in_cond(e_tf_cond::TF_COND_DISGUISED))
-                draw_flag("Disguised", color(255, 255, 255));
+                draw_flag("DG", color(255, 255, 255, alpha));
 
             if (shared->in_cond(e_tf_cond::TF_COND_STEALTHED))
-                draw_flag("Cloaked", color(255, 255, 255));
+                draw_flag("CLOAK", color(255, 255, 255,alpha));
 
             if (shared->in_cond(e_tf_cond::TF_COND_PHASE))
-                draw_flag("Bonked", color(255, 255, 255));
+                draw_flag("BONK", color(255, 255, 255, alpha));
 
             if (shared->in_cond(e_tf_cond::TF_COND_INVULNERABLE))
-                draw_flag("Invulnerable", color(255, 255, 255));
+                draw_flag("CRIT", color(255, 255, 255, alpha));
 
             if (shared->in_cond(e_tf_cond::TF_COND_TAUNTING))
-                draw_flag("Taunting", color(255, 255, 255));
+                draw_flag("TAUNT", color(255, 255, 255, alpha));
+
+            if (shared->in_cond(e_tf_cond::TF_COND_ZOOMED))
+                draw_flag("ZOOM", color(60, 20, 225, alpha));
+          //idk if im stupid or something but the color doesnt seem to change from white
+            if (shared->in_cond(e_tf_cond::TF_COND_BLEEDING))
+                draw_flag("BLEED", color(255, 5, 5, alpha));
         }
 
         if (player_esp.weapon->m_value)
@@ -151,9 +188,13 @@ void c_visuals::player_esp()
             }
 
             std::string weapon_text = weapon->get_localized_name();
+
+            // smallfonts needs upper case.
+            std::transform(weapon_text.begin(), weapon_text.end(), weapon_text.begin(), ::toupper);
             g_render.text(g_render.m_fonts.secondary,
-                          {bounding_box.m_x + (bounding_box.m_w * 0.5f), bounding_box.m_y - 30}, weapon_text.c_str(),
-                          {255, 255, 255, 255}, text_align_center);
+                          {bounding_box.m_x + (bounding_box.m_w * 0.5f), bounding_box.m_y + bounding_box.m_h},
+                           weapon_text.c_str(),
+                          {255, 255, 255, alpha}, text_align_center);
         }
     }
 
