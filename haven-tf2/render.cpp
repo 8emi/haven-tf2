@@ -3,15 +3,15 @@
 
 void c_render::init()
 {
-    this->m_fonts.main = create_font("Tahoma", 12, 300, e_font_flags::font_flag_dropshadow);
-    this->m_fonts.secondary = create_font("Tahoma", 11, 300, e_font_flags::font_flag_dropshadow);
-    
+    this->m_fonts.main = create_font("Verdana", 12, FW_NORMAL, e_font_flags::font_flag_dropshadow);
+    this->m_fonts.secondary = create_font("Small Fonts", 8, FW_NORMAL, e_font_flags::font_flag_outline);
+  
+
     // menu.
-    this->m_fonts.menu.main = create_font("Tahoma", 12, 200, e_font_flags::font_flag_antialias);
-    this->m_fonts.menu.title = create_font("Segoe UI", 13, 200, e_font_flags::font_flag_antialias);
-    this->m_fonts.menu.tabs =
-        create_font("Segoe UI", 18, 200, e_font_flags::font_flag_antialias | e_font_flags::font_flag_dropshadow);
-    this->m_fonts.menu.tooltip = create_font("Tahoma", 13, 300, e_font_flags::font_flag_dropshadow);
+    this->m_fonts.menu.main = create_font("Tahoma", 12, FW_EXTRALIGHT, e_font_flags::font_flag_antialias);
+    this->m_fonts.menu.title = create_font("Segoe UI", 13, FW_EXTRALIGHT, e_font_flags::font_flag_antialias);
+    this->m_fonts.menu.tabs = create_font("Segoe UI", 18, FW_EXTRALIGHT,e_font_flags::font_flag_antialias | e_font_flags::font_flag_dropshadow);
+    this->m_fonts.menu.tooltip = create_font("Tahoma", 13, FW_LIGHT, e_font_flags::font_flag_dropshadow);
 }
 
 void c_render::filled_rect(const box_t box, const color col)
