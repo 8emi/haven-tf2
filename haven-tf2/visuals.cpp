@@ -21,8 +21,8 @@ void c_visuals::on_paint()
 
 void c_visuals::watermark()
 {
-    const auto text_size = g_render.get_text_size("haven", g_render.m_fonts.main);
+    const auto text_size = g_render.get_text_size("haven modified", g_render.m_fonts.main);
 
     g_render.filled_rect({3, 3}, {text_size.m_x + 4, text_size.m_y + 4}, {0, 0, 0, 150});
-    g_render.text(g_render.m_fonts.main, {5, 5}, "haven", {255, 255, 255});
+    g_render.text(g_render.m_fonts.main, {5, 5}, "haven modified", {255, 255, 255});
 }
