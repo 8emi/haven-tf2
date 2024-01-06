@@ -35,6 +35,17 @@ enum e_font_flags
     font_flag_custom = 0x400,
     font_flag_bitmap = 0x800,
 };
+/* Font Weights */
+#define FW_DONTCARE 0
+#define FW_THIN 100
+#define FW_EXTRALIGHT 200
+#define FW_LIGHT 300
+#define FW_NORMAL 400
+#define FW_MEDIUM 500
+#define FW_SEMIBOLD 600
+#define FW_BOLD 700
+#define FW_EXTRABOLD 800
+#define FW_HEAVY 900
 
 class i_surface
 {
